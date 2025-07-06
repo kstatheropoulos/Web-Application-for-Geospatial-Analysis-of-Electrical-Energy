@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/png" href="logo.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Αρχική</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      overflow: hidden;
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      background-image: url('background.png');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-attachment: fixed;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    header {
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 15px 0;
+      text-align: center;
+      color: white;
+      font-size: 26px;
+      font-weight: bold;
+      text-shadow: 1px 1px 4px black;
+      position: relative;
+      z-index: 2;
+    }
+
+    nav {
+      background-color: rgba(0, 0, 0, 0.5);
+      padding: 12px 0;
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      z-index: 2;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    nav a {
+      color: #f0f0f0;
+      text-decoration: none;
+      font-size: 18px;
+      transition: color 0.3s;
+    }
+
+    nav a:hover {
+      color: lightblue;
+    }
+
+    .content {
+      flex: 1;
+      position: relative;
+      z-index: 2;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      text-shadow: 1px 1px 5px black;
+      overflow-y: auto;
+    }
+
+    .content h1 {
+      font-size: 1.8em;
+      margin-bottom: 20px;
+    }
+
+    .content p {
+      max-width: 800px;
+      margin: 0 auto 30px auto;
+      font-size: 18px;
+      line-height: 1.6;
+    }
+
+    .guide-button {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 10px 20px;
+      background-color: #007acc;
+      color: white;
+      text-decoration: none;
+      font-size: 16px;
+      border-radius: 6px;
+      box-shadow: 1px 1px 5px black;
+      transition: background-color 0.3s;
+    }
+
+    .guide-button:hover {
+      background-color: #005fa3;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px 30px;
+      background: transparent;
+      color: white;
+      z-index: 2;
+      position: relative;
+    }
+
+    footer img {
+      height: 80px;
+      margin-bottom: 10px;
+    }
+
+    footer div {
+      font-size: 14px;
+    }
+
+    .copyright-fixed {
+      position: fixed;
+      bottom: 10px;
+      right: 20px;
+      font-size: 12px;
+      color: #ccc;
+      text-shadow: 1px 1px 2px black;
+      z-index: 10;
+      text-align: right;
+    }
+
+    @media (max-width: 600px) {
+      nav {
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px 0;
+      }
+
+      .content h1 {
+        font-size: 1.3em;
+      }
+
+      .content p {
+        font-size: 16px;
+      }
+
+      .guide-button {
+        font-size: 14px;
+        padding: 8px 16px;
+      }
+
+      .copyright-fixed {
+        font-size: 11px;
+        right: 10px;
+        bottom: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="overlay"></div>
+
+  <header>Διαδικτυακή Εφαρμογή Γεωχωρικής Ανάλυσης Ηλεκτρικής Ενέργειας</header>
+
+  <nav>
+    <a href="index.html">Αρχική</a>
+    <a href="map.html">Χάρτης</a>
+    <a href="stats.html">Στατιστικά Διαγράμματα</a>
+    <a href="triangulation.html">Τριγωνικό Διάγραμμα</a>
+  </nav>
+
+  <div class="content">
+    <p>
+      Η παρούσα πλατφόρμα σας δίνει τη δυνατότητα να εξερευνήσετε, να αναλύσετε και να κατανοήσετε γεωχωρικά δεδομένα που σχετίζονται με την ηλεκτρική ενέργεια στην Ε.Ε. Μέσω χαρτογραφικών εργαλείων, διαδραστικών στατιστικών και επιστημονικά τεκμηριωμένων δεδομένων, μπορείτε να έχετε ολοκληρωμένη εικόνα για κρίσιμες πτυχές του ενεργειακού δικτύου.
+    </p>
+    <a href="guidelines.pdf" target="_blank" class="guide-button">
+      📄 Οδηγός Χρήσης (PDF)
+    </a>
+  </div>
+
+  <footer>
+    <div style="display: flex; justify-content: flex-start; align-items: flex-start; flex-wrap: wrap;">
+      <div style="text-align: left; max-width: 50%;">
+        <a href="https://geoinformatics.ntua.gr/" target="_blank" rel="noopener"
+           style="display: inline-block; background-color: rgba(255,255,255,0.85); border-radius: 12px; padding: 6px; box-shadow: 0 0 10px rgba(0,0,0,0.4);">
+          <img src="logoNewMscReg.png" alt="Λογότυπο ΕΜΠ" style="height: 80px; display: block;">
+        </a>
+        <div style="margin-top: 10px; font-size: 14px; text-shadow: 1px 1px 3px black;">
+          Σχολή Αγρονόμων και Τοπογράφων Μηχανικών<br>
+          Μηχανικών Γεωπληροφορικής
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <div class="copyright-fixed">
+  <a href="https://www.linkedin.com/in/konstantinos-statheropoulos-525487187" target="_blank" rel="noopener noreferrer" style="color: #ccc; text-decoration: none;">
+    © 2025 Konstantinos Statheropoulos<br>
+    MSc in Geoinformatics, NTUA
+  </a>
+  </div>
+
+</body>
+</html>

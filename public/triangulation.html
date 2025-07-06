@@ -1,0 +1,230 @@
+
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="logo.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Τριγωνικό Διάγραμμα</title>
+  <script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif;
+      background-image: url('background.png');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-attachment: fixed;
+      color: white;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 0;
+    }
+
+    body > * {
+      position: relative;
+      z-index: 2;
+    }
+
+    header {
+      background-color: rgba(0, 0, 0, 0.7);
+      width: 100%;
+      padding: 15px 0;
+      text-align: center;
+      font-size: 26px;
+      font-weight: bold;
+    }
+
+    nav {
+      background-color: rgba(0, 0, 0, 0.5);
+      width: 100%;
+      padding: 12px 0;
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    nav a {
+      color: #f0f0f0;
+      text-decoration: none;
+      font-size: 18px;
+    }
+
+    nav a:hover {
+      color: lightblue;
+    }
+
+    .content {
+      max-width: 900px;
+      margin: auto;
+      text-align: center;
+      padding: 30px 20px;
+    }
+
+    #ternaryPlot {
+      height: 700px;
+    }
+
+    .selector {
+      margin-bottom: 20px;
+    }
+
+    .selector label {
+      margin-right: 10px;
+      font-weight: bold;
+    }
+
+    .selector select {
+      padding: 5px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="overlay"></div>
+
+  <header>Διαδικτυακή Εφαρμογή Γεωχωρικής Ανάλυσης Ηλεκτρικής Ενέργειας</header>
+
+  <nav>
+    <a href="index.html">Αρχική</a>
+    <a href="map.html">Χάρτης</a>
+    <a href="stats.html">Στατιστικά Διαγράμματα</a>
+    <a href="triangulation.html">Τριγωνικό Διάγραμμα</a>
+  </nav>
+
+  <div class="content">
+    <h1>Τριγωνικό Διάγραμμα Παραγωγής Ενέργειας</h1>
+
+    <div class="selector">
+      <label for="year">Έτος:</label>
+      <select id="year"></select>
+
+      <label for="sizeBy">Μέγεθος κουκίδας ανά:</label>
+      <select id="sizeBy">
+        <option value="total">Συνολική Παραγωγή Ενέργειας</option>
+        <option value="population">Πληθυσμό</option>
+      </select>
+    </div>
+
+    <div id="ternaryPlot"></div>
+  </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const yearSelect = document.getElementById('year');
+  const sizeBySelect = document.getElementById('sizeBy');
+
+  async function loadYears() {
+    try {
+      const res = await fetch('/api/energy/years');
+      const years = await res.json();
+      yearSelect.innerHTML = '';
+      years.forEach(y => {
+        const option = document.createElement('option');
+        option.value = y;
+        option.textContent = y;
+        yearSelect.appendChild(option);
+      });
+      loadData(); // αρχική φόρτωση
+    } catch (err) {
+      console.error('Σφάλμα φόρτωσης ετών:', err);
+    }
+  }
+
+  async function loadData() {
+    const year = yearSelect.value;
+    const sizeBy = sizeBySelect.value;
+
+    try {
+      const res = await fetch(`/api/energy/ternary?year=${year}&sizeBy=${sizeBy}`);
+      const data = await res.json();
+
+      const a = data.map(d => d.a);
+      const b = data.map(d => d.b);
+      const c = data.map(d => d.c);
+      const sizes = data.map(d => +d.size);
+
+      const text = data.map(d =>
+        `${d.country}<br>Άνθρακας: ${Number(d.a).toFixed(2)}%<br>Φυσικό Αέριο: ${Number(d.b).toFixed(2)}%<br>ΑΠΕ: ${Number(d.c).toFixed(2)}%`
+      );
+
+      const trace = {
+        type: 'scatterternary',
+        mode: 'markers',
+        a: a,
+        b: b,
+        c: c,
+        text: text,
+        hovertemplate: '%{text}<extra></extra>',
+        marker: {
+          symbol: 100,
+          color: 'blue',
+          size: sizes.map(s => Math.sqrt(+s) / 200)
+        }
+      };
+
+      const layout = {
+        ternary: {
+          sum: 100,
+          aaxis: {
+            title: { text: 'Άνθρακας', standoff: 30, font: { size: 14 } },
+            tickangle: 0,
+            tickfont: { size: 10 }
+          },
+          baxis: {
+            title: { text: 'Φυσικό Αέριο', standoff: 30, font: { size: 14 } },
+            tickangle: 0,
+            tickfont: { size: 10 }
+          },
+          caxis: {
+            title: { text: 'ΑΠΕ', standoff: 30, font: { size: 14 } },
+            tickangle: 0,
+            tickfont: { size: 10 }
+          }
+        },
+        margin: { t: 30, b: 30 },
+        height: 700,
+        paper_bgcolor: 'rgba(255,255,255,0)',
+        font: { color: 'white', size: 12 }
+      };
+
+      Plotly.newPlot('ternaryPlot', [trace], layout);
+    } catch (err) {
+      console.error('Σφάλμα φόρτωσης δεδομένων:', err);
+    }
+  }
+
+  yearSelect.addEventListener('change', loadData);
+  sizeBySelect.addEventListener('change', loadData);
+
+  loadYears();
+});
+</script>
+  <footer>
+    <div style="display: flex; justify-content: flex-start; align-items: flex-start; flex-wrap: wrap;">
+      <div style="text-align: left; max-width: 50%;">
+        <a href="https://www.iea.org/" target="_blank" rel="noopener"
+           style="display: inline-block;">
+          <img src="IEA_LOGO.png" alt="Λογότυπο IEA" style="height: 80px; display: block;">
+        </a>
+		<div class="copyright-fixed">
+            Πηγή δεδομένων: International Energy Agency
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
